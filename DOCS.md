@@ -1,8 +1,8 @@
 ## Plugin API Documentation
 
-You can write your own Botbot plugin by extending the core plugin class and providing one or more message handlers. A
+You can write your own BrainzBot plugin by extending the core plugin class and providing one or more message handlers. A
 message handler is a method on the plugin class that receives an object representing a user message that has been
-posted to the IRC channel the plugin is associated with. The existing plugins in `botbot_plugins/plugins` serve as good examples to follow. `ping` and `brain` are good ones to start with due to their simplicity.
+posted to the IRC channel the plugin is associated with. The existing plugins in `brainzbot_plugins/plugins` serve as good examples to follow. `ping` and `brain` are good ones to start with due to their simplicity.
 
 ### Plugin Capabilities
 
@@ -19,7 +19,7 @@ All plugins extend the BasePlugin class, providing them with the ability to util
 In the simplest case, a plugin will receive a message from an IRC channel and parse it based on a rule. When the parsed input
 matches a rule, the plugin may return a response.
 
-Additional methods should be defined on your `Plugin` class that will listen and optionally respond to incoming messages. They are registered with the app using one of the following decorators from `botbot_plugins.decorators`:
+Additional methods should be defined on your `Plugin` class that will listen and optionally respond to incoming messages. They are registered with the app using one of the following decorators from `brainzbot.decorators`:
 
 * `listens_to_mentions(regex)`: A method that should be called only when the bot's nick prefixes the message and that message matches the regex pattern. For example, `[o__o]: What time is it in Napier, New Zealand?`. The nick will be stripped prior to regex matching.
 * `listens_to_all(regex)`: A method that should be called on any line that matches the regex pattern.

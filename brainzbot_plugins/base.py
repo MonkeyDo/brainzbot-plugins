@@ -7,7 +7,7 @@ import fakeredis
 class PrivateMessage(object):
     """
     A holder object for sending a private message.
-    This is used in botbot.apps.plugins.runner
+    This is used in brainzbot.apps.plugins.runner
     """
     def __init__(self, nick, msg):
         self.nick = nick
@@ -115,7 +115,7 @@ class DummyPrivateMessage(object):
 
 REPL_INTRO = """
 #########################
-The BotBot.me plugin repl
+The BrainzBot plugin repl
 #########################
 
 Type a line to see how the plugins respond.
@@ -123,7 +123,7 @@ Prefix the line with `@` to send a direct message to the bot. Example:
     @ping
 
 To configure a plugin, use `!!{plugin_name}:{field_name}={value}`. Example:
-    !!github:organization=lincolnloop
+    !!github:organization=metabrainz
 """
 
 

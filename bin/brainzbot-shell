@@ -3,17 +3,17 @@ import os
 import sys
 from importlib import import_module
 
-from botbot_plugins.base import DummyApp
-import botbot_plugins.plugins
+from brainzbot_plugins.base import DummyApp
+import brainzbot_plugins.plugins
 
 
 def register_plugins(app, modules=None):
     """Imports the plugin modules to register them with the app router"""
     modules = modules and modules.split(',') or []
     if not modules:
-        modules = botbot_plugins.plugins.__all__
+        modules = brainzbot_plugins.plugins.__all__
     for mod in modules:
-        app.register(import_module('botbot_plugins.plugins.' + mod).Plugin())
+        app.register(import_module('brainzbot_plugins.plugins.' + mod).Plugin())
 
 
 if __name__ == '__main__':

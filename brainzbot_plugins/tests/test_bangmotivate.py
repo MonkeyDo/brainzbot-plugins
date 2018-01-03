@@ -1,6 +1,6 @@
 import pytest
-from botbot_plugins.base import DummyApp
-from botbot_plugins.plugins import bangmotivate
+from brainzbot_plugins.base import DummyApp
+from brainzbot_plugins.plugins import bangmotivate
 
 
 @pytest.fixture
@@ -9,8 +9,8 @@ def app():
 
 
 def test_motivate(app):
-    responses = app.respond("!m BotBot")
-    assert responses == ["You're doing good work, BotBot!"]
+    responses = app.respond("!m BrainzBot")
+    assert responses == ["You're doing good work, BrainzBot!"]
 
 
 def test_nomotivate(app):

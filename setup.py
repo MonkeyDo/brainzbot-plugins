@@ -2,12 +2,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='botbot_plugins',
+    name='brainzbot_plugins',
     version='1.0',
-    description="Plugins and service integrations for BotBot.me",
-    author="Lincoln Loop",
-    author_email='info@lincolnloop.com',
-    url='https://github.com/lincolnloop/botbot_plugins',
+    description="Plugins and service integrations for BrainzBot",
+    author="MetaBrainz (formerly Lincoln Loop)",
+    author_email='support@metabrainz.org',
+    url='https://github.com/metabrainz/brainzbot_plugins',
     packages=find_packages(),
     install_requires=(
         'pytest==2.3.5',
@@ -16,5 +16,5 @@ setup(
         'defusedxml==0.4.1',
         'fakeredis==0.9.0',
     ),
-    scripts=['bin/botbot-shell'],
+    scripts=['bin/brainzbot-shell'],
 )

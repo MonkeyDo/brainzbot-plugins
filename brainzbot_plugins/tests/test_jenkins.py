@@ -1,8 +1,8 @@
 import pytest
 from mock import patch, call
 import requests
-from botbot_plugins.base import DummyApp
-from botbot_plugins.plugins import jenkins
+from brainzbot_plugins.base import DummyApp
+from brainzbot_plugins.plugins import jenkins
 
 
 class FakeResponse(object):

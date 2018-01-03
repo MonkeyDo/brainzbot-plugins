@@ -11,4 +11,4 @@ def get_submodules(module_string):
         modules.append(module[:-3])
     return modules
 
-__all__ = get_submodules('botbot_plugins.plugins')
+__all__ = get_submodules('brainzbot_plugins.plugins')

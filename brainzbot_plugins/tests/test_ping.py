@@ -1,6 +1,6 @@
 import pytest
-from botbot_plugins.base import DummyApp
-from botbot_plugins.plugins import ping
+from brainzbot_plugins.base import DummyApp
+from brainzbot_plugins.plugins import ping
 
 @pytest.fixture
 def app():

@@ -3,8 +3,8 @@
 Message service tests
 """
 import pytest
-from botbot_plugins.base import DummyApp
-from botbot_plugins.plugins import message_service
+from brainzbot_plugins.base import DummyApp
+from brainzbot_plugins.plugins import message_service
 
 
 @pytest.fixture

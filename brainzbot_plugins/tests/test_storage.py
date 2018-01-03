@@ -1,4 +1,4 @@
-from botbot_plugins.base import BasePlugin, DummyApp
+from brainzbot_plugins.base import BasePlugin, DummyApp
 
 
 bp = BasePlugin()

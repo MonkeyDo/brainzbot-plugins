@@ -1,4 +1,4 @@
 __pycache__
 .idea/
 *.pyc
-botbot_plugins.egg-info
+brainzbot_plugins.egg-info

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
-from botbot_plugins.base import DummyApp
-from botbot_plugins.plugins import metabrain
+from brainzbot_plugins.base import DummyApp
+from brainzbot_plugins.plugins import metabrain
 
 
 
