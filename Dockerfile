@@ -1,4 +1,13 @@
-FROM gwadeloop/botbotweb
-MAINTAINER Yann Malet <yann.malet@gmail.com>
+FROM metabrainz/brainzbot-core
 
-CMD manage.py run_plugins --settings=botbot.settings
+WORKDIR /plugins
+
+COPY Pipfile Pipfile.lock ./
+RUN set -ex && pipenv install --deploy --system
+
+COPY . ./
+RUN python setup.py install
+
+WORKDIR /core
+
+CMD ["run_plugins", "--settings=botbot.settings"]
