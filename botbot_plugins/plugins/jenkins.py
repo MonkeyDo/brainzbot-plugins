@@ -1,5 +1,5 @@
 import requests
-import urlparse
+import urllib.parse
 
 from ..base import BasePlugin
 from .. import config
@@ -23,7 +23,7 @@ class Plugin(BasePlugin):
 
     config_class = Config
 
-    @listens_to_mentions(ur'jenkins build (?P<job>[\w\-\_]+)')
+    @listens_to_mentions(r'jenkins build (?P<job>[\w\-\_]+)')
     def build(self, line, job):
         """Trigger a build job on Jenkins"""
         auth, base_url = self.split_auth_and_url()
@@ -42,7 +42,7 @@ class Plugin(BasePlugin):
     def split_auth_and_url(self):
         """Strip the auth bits out of the config URL if they exist"""
         base_url = self.config['url'].rstrip('/')
-        parsed = urlparse.urlparse(base_url)
+        parsed = urllib.parse.urlparse(base_url)
         if parsed.username and parsed.password:
             auth = (parsed.username, parsed.password)
         else:

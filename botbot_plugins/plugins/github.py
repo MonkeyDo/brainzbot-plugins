@@ -35,13 +35,13 @@ class Plugin(BasePlugin):
     url = "https://api.github.com/repos"
     config_class = Config
 
-    @listens_to_mentions(ur'(?:.*)\b(?:GH|gh):(?P<abbreviation>[\w\-\_]+)=(?P<repo>[\w\-\_]+)')
+    @listens_to_mentions(r'(?:.*)\b(?:GH|gh):(?P<abbreviation>[\w\-\_]+)=(?P<repo>[\w\-\_]+)')
     def store_abbreviation(self, line, abbreviation, repo):
         """Store an abbreviation for future PR lookups"""
         self.store(abbreviation, repo)
-        return "Successfully stored the repo {} as {} for Github lookups".format(repo, abbreviation)
+        return f"Successfully stored the repo {repo} as {abbreviation} for Github lookups"
 
-    @listens_to_all(ur'(?:.*)\b(?:GH|gh):(?P<repo_abbreviation>[\w\-\_]+)#?(?P<pulls>\d+(?:,\d+)*)\b(?:.*)')
+    @listens_to_all(r'(?:.*)\b(?:GH|gh):(?P<repo_abbreviation>[\w\-\_]+)#?(?P<pulls>\d+(?:,\d+)*)\b(?:.*)')
     def issue_lookup(self, line, repo_abbreviation, pulls):
         """Lookup an specified repo pulls"""
         # pulls can be a list of pulls separated by a comma
@@ -55,11 +55,10 @@ class Plugin(BasePlugin):
                                 repo, "pulls", pull])
             response = requests.get(api_url, auth=self._get_auth())
             if response.status_code == 200:
-                resp = u'{title}: {html_url}'.format(**response.json())
+                resp = '{title}: {html_url}'.format(**response.json())
                 response_list.append(resp)
             else:
-                resp = u"Sorry I couldn't find pull #{0} in {1}/{2}".format(
-                    pull, self.config['organization'], repo)
+                resp = f"Sorry I couldn't find pull #{pull} in {self.config['organization']}/{repo}"
                 response_list.append(resp)
 
         return ", ".join(response_list)
@@ -67,5 +66,5 @@ class Plugin(BasePlugin):
     def _get_auth(self):
         """Return user credentials if they are configured"""
         if self.config['user'] and self.config['password']:
-            return (self.config['user'], self.config['password'])
+            return self.config['user'], self.config['password']
         return None

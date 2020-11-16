@@ -10,6 +10,7 @@ def listens_to_mentions(regex):
         return func
     return decorator
 
+
 def listens_to_all(regex):
     """
     Decorator to add function and rule to routing table
@@ -21,6 +22,7 @@ def listens_to_all(regex):
         func.route_rule = ('messages', regex)
         return func
     return decorator
+
 
 def listens_to_command(cmd):
     """
@@ -37,6 +39,7 @@ def listens_to_command(cmd):
         func.route_rule = ('commands', cmd)
         return func
     return decorator
+
 
 def listens_to_regex_command(cmd, regex):
     """

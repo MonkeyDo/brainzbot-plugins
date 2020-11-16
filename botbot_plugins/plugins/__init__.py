@@ -1,6 +1,7 @@
 import os
 from importlib import import_module
 
+
 def get_submodules(module_string):
     module = import_module(module_string)
     modules_dir = os.path.dirname(module.__file__)
@@ -10,5 +11,6 @@ def get_submodules(module_string):
             continue
         modules.append(module[:-3])
     return modules
+
 
 __all__ = get_submodules('botbot_plugins.plugins')

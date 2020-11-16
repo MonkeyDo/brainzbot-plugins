@@ -8,19 +8,22 @@ from botbot_plugins.plugins import vote
 def app():
     return DummyApp(test_plugin=vote.Plugin(), command_prefix="!")
 
+
 def test_no_concurrent_voting(app):
     assert app.respond("!startvote") == ["Voting has started."]
-    assert app.respond("!startvote") == [u"repl_user: There’s already a vote going on. Use the “endvote” command to end it before starting a new one."]
+    assert app.respond("!startvote") == ["repl_user: There’s already a vote going on. Use the “endvote” command to end it before starting a new one."]
     app.respond("!endvote")
+
 
 def test_no_vote_running(app):
     assert app.respond("+1") == []
     assert app.respond("+something") == []
-    assert app.respond("!vote +something") == [u"No vote has been started. Use the “startvote” command to do so."]
-    assert app.respond("!countvotes") == [u"No vote has been started. Use the “startvote” command to do so."]
-    assert app.respond("!abstain") == [u"No vote has been started. Use the “startvote” command to do so."]
-    assert app.respond("!cancelvotes") == [u"No vote has been started. Use the “startvote” command to do so."]
-    assert app.respond("!endvote") == [u"No vote has been started. Use the “startvote” command to do so."]
+    assert app.respond("!vote +something") == ["No vote has been started. Use the “startvote” command to do so."]
+    assert app.respond("!countvotes") == ["No vote has been started. Use the “startvote” command to do so."]
+    assert app.respond("!abstain") == ["No vote has been started. Use the “startvote” command to do so."]
+    assert app.respond("!cancelvotes") == ["No vote has been started. Use the “startvote” command to do so."]
+    assert app.respond("!endvote") == ["No vote has been started. Use the “startvote” command to do so."]
+
 
 def test_boolean_voting(app):
     assert app.respond("!startvote") == ["Voting has started."]
@@ -64,13 +67,14 @@ def test_boolean_voting(app):
 
     # Invalid option
     assert app.respond("+invalid") == []
-    assert app.respond("!vote +invalid") == [u"“invalid” is not a valid option."]
+    assert app.respond("!vote +invalid") == ["“invalid” is not a valid option."]
 
     assert app.respond("!endvote") == ["Voting has ended."]
 
     # With name
-    assert app.respond("!startvote is jesus real?") == [u"Voting has started for proposal “is jesus real?”."]
-    assert app.respond("!endvote") == [u"Voting has ended for proposal “is jesus real?”."]
+    assert app.respond("!startvote is jesus real?") == ["Voting has started for proposal “is jesus real?”."]
+    assert app.respond("!endvote") == ["Voting has ended for proposal “is jesus real?”."]
+
 
 def test_non_boolean_voting(app):
     assert app.respond("!startvote [port, firewall, app]") == ["Voting has started."]
@@ -112,13 +116,13 @@ def test_non_boolean_voting(app):
 
     # Invalid option
     assert app.respond("+invalid") == []
-    assert app.respond("!vote +invalid") == [u"“invalid” is not a valid option."]
+    assert app.respond("!vote +invalid") == ["“invalid” is not a valid option."]
 
     assert app.respond("!endvote") == ["Voting has ended."]
 
     # With name
-    assert app.respond("!startvote is jesus real? [port, firewall, app]") == [u"Voting has started for proposal “is jesus real?”."]
-    assert app.respond("!endvote") == [u"Voting has ended for proposal “is jesus real?”."]
+    assert app.respond("!startvote is jesus real? [port, firewall, app]") == ["Voting has started for proposal “is jesus real?”."]
+    assert app.respond("!endvote") == ["Voting has ended for proposal “is jesus real?”."]
 
     # Closest match needs to be greedy
     app.respond("!startvote [hello, hello world]")
@@ -151,6 +155,7 @@ def test_non_boolean_voting(app):
     assert app.respond("!countvotes") == ["[+1: repl_user] [-0: ] [\\0: ]"]
     app.respond("!endvote")
 
+
 def test_cancelvotes(app):
     assert app.respond("!startvote") == ["Voting has started."]
     app.respond("+1")
@@ -166,11 +171,13 @@ def test_cancelvotes(app):
     assert app.respond("!countvotes") == ["[app(+0, -0): ] [firewall(+0, -1): -repl_user] [port(+1, -0): repl_user] [\\0: ]"]
     app.respond("!endvote")
 
+
 def test_explicit_abstain(app):
     assert app.respond("!startvote") == ["Voting has started."]
     app.respond("!abstain")
     assert app.respond("!countvotes") == ["[+0: ] [-0: ] [\\1: repl_user]"]
     app.respond("!endvote")
+
 
 def test_endvote_prints_countvote(app):
     assert app.respond("!startvote") == ["Voting has started."]
@@ -189,59 +196,62 @@ def test_endvote_prints_countvote(app):
     app.respond("\\1")
     assert app.respond("!endvote")[0].split('\n') == ["Voting has ended.", "[+0: ] [-0: ] [\\1: repl_user]"]
 
+
 def test_cancelvote_when_novotes(app):
     assert app.respond("!startvote") == ["Voting has started."]
     assert app.respond("!cancelvotes") == []
     app.respond("!endvote")
 
+
 def test_unicode(app):
-    assert app.respond(u"!startvote Должен ли Владимир Путин стать следующим президентом России? [да, нет, Может быть]") == \
-        [u"Voting has started for proposal “Должен ли Владимир Путин стать следующим президентом России?”."]
-    app.respond(u"+Может быть")
-    assert app.respond("!countvotes") == [u"[Может быть(+1, -0): repl_user] [да(+0, -0): ] [нет(+0, -0): ] [\\0: ]"]
-    app.respond(u"-нет")
-    assert app.respond("!countvotes") == [u"[Может быть(+1, -0): repl_user] [да(+0, -0): ] [нет(+0, -1): -repl_user] [\\0: ]"]
-    app.respond(u"+да", User="Российский патриот")
-    assert app.respond("!countvotes") == [u"[Может быть(+1, -0): repl_user] [да(+1, -0): Российский патриот] [нет(+0, -1): -repl_user] [\\0: ]"]
-    assert app.respond("!endvote") == [u"Voting has ended for proposal “Должен ли Владимир Путин стать следующим президентом России?”."]
+    assert app.respond("!startvote Должен ли Владимир Путин стать следующим президентом России? [да, нет, Может быть]") == \
+        ["Voting has started for proposal “Должен ли Владимир Путин стать следующим президентом России?”."]
+    app.respond("+Может быть")
+    assert app.respond("!countvotes") == ["[Может быть(+1, -0): repl_user] [да(+0, -0): ] [нет(+0, -0): ] [\\0: ]"]
+    app.respond("-нет")
+    assert app.respond("!countvotes") == ["[Может быть(+1, -0): repl_user] [да(+0, -0): ] [нет(+0, -1): -repl_user] [\\0: ]"]
+    app.respond("+да", User="Российский патриот")
+    assert app.respond("!countvotes") == ["[Может быть(+1, -0): repl_user] [да(+1, -0): Российский патриот] [нет(+0, -1): -repl_user] [\\0: ]"]
+    assert app.respond("!endvote") == ["Voting has ended for proposal “Должен ли Владимир Путин стать следующим президентом России?”."]
+
 
 def test_emoji_voting(app):
     app.respond("!startvote")
-    app.respond(u"👍", User="thumbs up")
+    app.respond("👍", User="thumbs up")
     assert app.respond("!countvotes") == ["[+1: thumbs up] [-0: ] [\\0: ]"]
-    app.respond(u"👍🏻", User="light thumbs up")
+    app.respond("👍🏻", User="light thumbs up")
     assert app.respond("!countvotes") == ["[+2: thumbs up, light thumbs up] [-0: ] [\\0: ]"]
-    app.respond(u"👍🏼", User="medium-light thumbs up")
+    app.respond("👍🏼", User="medium-light thumbs up")
     assert app.respond("!countvotes") == ["[+3: thumbs up, light thumbs up, medium-light thumbs up] [-0: ] [\\0: ]"]
-    app.respond(u"👍🏽", User="medium thumbs up")
+    app.respond("👍🏽", User="medium thumbs up")
     assert app.respond("!countvotes") == ["[+4: thumbs up, light thumbs up, medium-light thumbs up, medium thumbs up] [-0: ] [\\0: ]"]
-    app.respond(u"👍🏾", User="medium-dark thumbs up")
+    app.respond("👍🏾", User="medium-dark thumbs up")
     assert app.respond("!countvotes") == ["[+5: thumbs up, light thumbs up, medium-light thumbs up, medium thumbs up, medium-dark thumbs up] [-0: ] [\\0: ]"]
-    app.respond(u"👍🏿", User="dark thumbs up")
+    app.respond("👍🏿", User="dark thumbs up")
     assert app.respond("!countvotes") == ["[+6: thumbs up, light thumbs up, medium-light thumbs up, medium thumbs up, medium-dark thumbs up, dark thumbs up] [-0: ] [\\0: ]"]
-    app.respond(u"😍", User="smiling heart face")
+    app.respond("😍", User="smiling heart face")
     assert app.respond("!countvotes") == ["[+7: thumbs up, light thumbs up, medium-light thumbs up, medium thumbs up, medium-dark thumbs up, dark thumbs up, smiling heart face] [-0: ] [\\0: ]"]
-    app.respond(u"😻", User="smiling cat heart face")
+    app.respond("😻", User="smiling cat heart face")
     assert app.respond("!countvotes") == ["[+8: thumbs up, light thumbs up, medium-light thumbs up, medium thumbs up, medium-dark thumbs up, dark thumbs up, smiling heart face, smiling cat heart face] [-0: ] [\\0: ]"]
     app.respond("!endvote")
 
     app.respond("!startvote")
-    app.respond(u"👎", User="thumbs down")
+    app.respond("👎", User="thumbs down")
     assert app.respond("!countvotes") == ["[+0: ] [-1: thumbs down] [\\0: ]"]
-    app.respond(u"👎🏻", User="light thumbs down")
+    app.respond("👎🏻", User="light thumbs down")
     assert app.respond("!countvotes") == ["[+0: ] [-2: thumbs down, light thumbs down] [\\0: ]"]
-    app.respond(u"👎🏼", User="medium-light thumbs down")
+    app.respond("👎🏼", User="medium-light thumbs down")
     assert app.respond("!countvotes") == ["[+0: ] [-3: thumbs down, light thumbs down, medium-light thumbs down] [\\0: ]"]
-    app.respond(u"👎🏽", User="medium thumbs down")
+    app.respond("👎🏽", User="medium thumbs down")
     assert app.respond("!countvotes") == ["[+0: ] [-4: thumbs down, light thumbs down, medium-light thumbs down, medium thumbs down] [\\0: ]"]
-    app.respond(u"👎🏾", User="medium-dark thumbs down")
+    app.respond("👎🏾", User="medium-dark thumbs down")
     assert app.respond("!countvotes") == ["[+0: ] [-5: thumbs down, light thumbs down, medium-light thumbs down, medium thumbs down, medium-dark thumbs down] [\\0: ]"]
-    app.respond(u"👎🏿", User="dark thumbs down")
+    app.respond("👎🏿", User="dark thumbs down")
     assert app.respond("!countvotes") == ["[+0: ] [-6: thumbs down, light thumbs down, medium-light thumbs down, medium thumbs down, medium-dark thumbs down, dark thumbs down] [\\0: ]"]
-    app.respond(u"–1", User="en dash")
+    app.respond("–1", User="en dash")
     assert app.respond("!countvotes") == ["[+0: ] [-7: thumbs down, light thumbs down, medium-light thumbs down, medium thumbs down, medium-dark thumbs down, dark thumbs down, en dash] [\\0: ]"]
-    app.respond(u"—1", User="em dash")
+    app.respond("—1", User="em dash")
     assert app.respond("!countvotes") == ["[+0: ] [-8: thumbs down, light thumbs down, medium-light thumbs down, medium thumbs down, medium-dark thumbs down, dark thumbs down, en dash, em dash] [\\0: ]"]
-    app.respond(u"―1", User="horizontal bar")
+    app.respond("―1", User="horizontal bar")
     assert app.respond("!countvotes") == ["[+0: ] [-9: thumbs down, light thumbs down, medium-light thumbs down, medium thumbs down, medium-dark thumbs down, dark thumbs down, en dash, em dash, horizontal bar] [\\0: ]"]
     app.respond("!endvote")

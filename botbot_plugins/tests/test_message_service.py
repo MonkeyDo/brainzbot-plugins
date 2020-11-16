@@ -17,7 +17,7 @@ def test_remember(app):
     [d__d]: message user foobar
     """
     responses = app.respond(r'@message george Are you going to the meeting?')
-    assert responses == [u'repl_user, I will tell george when they appear online.']
+    assert responses == ['repl_user, I will tell george when they appear online.']
 
 
 def test_remind_user(app):
@@ -25,12 +25,13 @@ def test_remind_user(app):
     The user should be messaged when joining the channel
     """
     responses = app.respond(r'@message george Are you going to the meeting?')
-    assert responses == [u'repl_user, I will tell george when they appear online.']
+    assert responses == ['repl_user, I will tell george when they appear online.']
 
     responses = app.respond('george joined the channel', **{
         'Command': 'JOIN',
         'User': 'george'})
     assert responses == ["Beep BEEP! You received the following messages in #dummy-channel when you were offline.\nFrom repl_user 'Are you going to the meeting?'"]
+
 
 def test_multiple_reminders(app):
     """

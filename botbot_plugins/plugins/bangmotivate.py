@@ -17,6 +17,6 @@ class Plugin(BasePlugin):
     http://motivate.im/
     """
 
-    @listens_to_all(ur'^\!m (?P<nick>.+?)$')
+    @listens_to_all(r'^\!m (?P<nick>.+?)$')
     def motivate(self, line, nick):
-        return u"You're doing good work, {}!".format(nick)
+        return f"You're doing good work, {nick}!"

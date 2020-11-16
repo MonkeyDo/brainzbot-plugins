@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#import urllib
 import requests
 from defusedxml import ElementTree
 
@@ -10,6 +9,7 @@ from ..decorators import listens_to_mentions
 
 class Config(config.BaseConfig):
     app_id = config.Field(help_text="Wolfram Alpha developer app ID")
+
 
 class Plugin(BasePlugin):
     """
@@ -31,7 +31,7 @@ class Plugin(BasePlugin):
     config_class = Config
     url = "http://api.wolframalpha.com/v2/query?"
 
-    @listens_to_mentions(ur'(W|w)(hat|here|ho|hy|hen) .*?\?')
+    @listens_to_mentions(r'(W|w)(hat|here|ho|hy|hen) .*?\?')
     def search(self, line):
         message = line.text.encode('utf8')
         payload = {'input': message, 'appid': self.config['app_id']}
@@ -44,7 +44,7 @@ class Plugin(BasePlugin):
             return "Error parsing response from wolframalpha.com."
 
         if tree.attrib["success"] == "false":
-            return u"I don't know"
+            return "I don't know"
 
         result = _gather_results(tree)
 
@@ -66,7 +66,7 @@ def _gather_results(tree):
         val = None
         for plaintext in pod.findall('.//plaintext'):
             if plaintext.text:
-                val = plaintext.text.replace(u"\n", u", ")
+                val = plaintext.text.replace("\n", ", ")
 
         if val:
             result[pod_type] = (title, val)
@@ -76,16 +76,16 @@ def _gather_results(tree):
 
 def _answer(result, line):
     """Answer the question as best as we can"""
-    msgs = [u"Q: {}".format(result["Input"][1])]
+    msgs = [f"Q: {result['Input'][1]}"]
     del result["Input"]
 
     for pod_type in ["Result", "Solution", "Derivative"]:
         if pod_type in result:
-            msgs.append(u"A: {}".format(result[pod_type][1]))
+            msgs.append(f"A: {result[pod_type][1]}")
             return '\n'.join(msgs)
 
     # We didn't find a specific answer - go into more detail
 
-    for title, val in result.values():
-        msgs.append(u"{}: {}".format(title, val))
+    for title, val in list(result.values()):
+        msgs.append(f"{title}: {val}")
         return '\n'.join(msgs)

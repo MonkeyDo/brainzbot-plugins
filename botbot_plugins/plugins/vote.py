@@ -14,20 +14,21 @@ DEFAULT_VOTE_OPTION = "__vote__"
 ABSTAIN_OPTION = "__abstain__"
 
 ERROR_MESSAGES = {
-    "no_vote_started": u"No vote has been started. Use the “startvote” command to do so.",
-    "voting_already_running": u"{author}: There’s already a vote going on. Use the “endvote” command to end it before starting a new one.",
-    "invalid_option": u"“{option}” is not a valid option.",
-    "invalid_abstain": u"The only valid way to abstain is using \\{shortform}."
+    "no_vote_started": "No vote has been started. Use the “startvote” command to do so.",
+    "voting_already_running": "{author}: There’s already a vote going on. Use the “endvote” command to end it before starting a new one.",
+    "invalid_option": "“{option}” is not a valid option.",
+    "invalid_abstain": "The only valid way to abstain is using \\{shortform}."
 }
 INFO_MESSAGES = {
-    "voting_started": u"Voting has started.",
-    "voting_started_name": u"Voting has started for proposal “{name}”.",
-    "voting_ended": u"Voting has ended.",
-    "voting_ended_name": u"Voting has ended for proposal “{name}”."
+    "voting_started": "Voting has started.",
+    "voting_started_name": "Voting has started for proposal “{name}”.",
+    "voting_ended": "Voting has ended.",
+    "voting_ended_name": "Voting has ended for proposal “{name}”."
 }
 
+
 def get_default_vote_template(for_, against, username_sep):
-    return (u"[+{number_for}: {for_users}] [-{number_against}: {against_users}]"
+    return ("[+{number_for}: {for_users}] [-{number_against}: {against_users}]"
             .format(
                 number_for=len(for_),
                 number_against=len(against),
@@ -35,25 +36,26 @@ def get_default_vote_template(for_, against, username_sep):
                 against_users=username_sep.join(against)
             ))
 
+
 def get_abstain_template(abstainers, username_sep):
-    return (u"[\\{num}: {users}]"
+    return ("[\\{num}: {users}]"
             .format(
                 num=len(abstainers),
                 users=username_sep.join(abstainers)
             ))
 
+
 def get_section_template(name, for_, against, username_sep):
-    template = (u"[{}(+{}, -{}): "
-                .format(name, len(for_), len(against)))
+    template = f"[{name}(+{len(for_)}, -{len(against)}): "
 
     if for_:
         template += username_sep.join(for_)
     if for_ and against:
-        template += u"; "
+        template += "; "
     if against:
         template += username_sep.join(
-            u"-" + username for username in against)
-    template += u"]"
+            "-" + username for username in against)
+    template += "]"
     return template
 
 
@@ -74,35 +76,37 @@ OPPOSING_VOTE = {
 # whatsoever. It's the order and words used by the Unicode Consortium in their
 # technical reports. https://www.unicode.org/reports/tr51/#Diversity
 VOTE_SHORTCUT_TO_NAME = OrderedDict([
-    (u"+", FOR_NAME),
-    (u"👍🏻", FOR_NAME),  # Thumbs up (light skin tone)
-    (u"👍🏼", FOR_NAME),  # Thumbs up (medium-light skin tone)
-    (u"👍🏽", FOR_NAME),  # Thumbs up (medium skin tone)
-    (u"👍🏾", FOR_NAME),  # Thumbs up (medium-dark skin tone)
-    (u"👍🏿", FOR_NAME),  # Thumbs up (dark skin tone)
-    (u"👍", FOR_NAME),  # Regular thumbs up
-    (u"😍", FOR_NAME),  # Smiling face with heart eyes
-    (u"😻", FOR_NAME),  # Smiling cat face with heart eyes
-    (u"-", AGAINST_NAME),
-    (u"–", AGAINST_NAME),  # En dash
-    (u"—", AGAINST_NAME),  # Em dash
-    (u"―", AGAINST_NAME),  # Horizontal bar
-    (u"👎🏻", AGAINST_NAME),  # Thumbs down (light skin tone)
-    (u"👎🏼", AGAINST_NAME),  # Thumbs down (medium-light skin tone)
-    (u"👎🏽", AGAINST_NAME),  # Thumbs down (medium skin tone)
-    (u"👎🏾", AGAINST_NAME),  # Thumbs down (medium-dark skin tone)
-    (u"👎🏿", AGAINST_NAME),  # Thumbs down (dark skin tone)
-    (u"👎", AGAINST_NAME),  # Regular thumbs down
-    (u"", FOR_NAME)
+    ("+", FOR_NAME),
+    ("👍🏻", FOR_NAME),  # Thumbs up (light skin tone)
+    ("👍🏼", FOR_NAME),  # Thumbs up (medium-light skin tone)
+    ("👍🏽", FOR_NAME),  # Thumbs up (medium skin tone)
+    ("👍🏾", FOR_NAME),  # Thumbs up (medium-dark skin tone)
+    ("👍🏿", FOR_NAME),  # Thumbs up (dark skin tone)
+    ("👍", FOR_NAME),  # Regular thumbs up
+    ("😍", FOR_NAME),  # Smiling face with heart eyes
+    ("😻", FOR_NAME),  # Smiling cat face with heart eyes
+    ("-", AGAINST_NAME),
+    ("–", AGAINST_NAME),  # En dash
+    ("—", AGAINST_NAME),  # Em dash
+    ("―", AGAINST_NAME),  # Horizontal bar
+    ("👎🏻", AGAINST_NAME),  # Thumbs down (light skin tone)
+    ("👎🏼", AGAINST_NAME),  # Thumbs down (medium-light skin tone)
+    ("👎🏽", AGAINST_NAME),  # Thumbs down (medium skin tone)
+    ("👎🏾", AGAINST_NAME),  # Thumbs down (medium-dark skin tone)
+    ("👎🏿", AGAINST_NAME),  # Thumbs down (dark skin tone)
+    ("👎", AGAINST_NAME),  # Regular thumbs down
+    ("", FOR_NAME)
 ])
 
 Vote = namedtuple('Vote', ['voter', 'section', 'vote'])
+
 
 class Config(config.BaseConfig):
 
     options_separator = config.Field(help_text="Separator to use when starting a vote with custom options", default=",")
     username_separator = config.Field(help_text="Separator between usernames when printing out votes", default=",")
-    boolean_shortform = config.Field(help_text=u"The short option that voters can use in boolean votes", default="1")
+    boolean_shortform = config.Field(help_text="The short option that voters can use in boolean votes", default="1")
+
 
 class Plugin(BasePlugin):
     """
@@ -150,7 +154,7 @@ class Plugin(BasePlugin):
     config_class = Config
 
     @listens_to_regex_command("startvote",
-                              ur"(?P<name>[^\[\]]+?)?\s*(\[(?P<options>.*)\])?\s*$")
+                              r"(?P<name>[^\[\]]+?)?\s*(\[(?P<options>.*)\])?\s*$")
     def startvote(self, line, name, options):
         options_sep = self.config["options_separator"]
         if self.retrieve("votes"):
@@ -159,8 +163,8 @@ class Plugin(BasePlugin):
 
         default_options = [DEFAULT_VOTE_OPTION]
         options =\
-            filter(bool, [option_name.strip() for option_name
-                          in (options.split(options_sep) if options else [])])
+            list(filter(bool, [option_name.strip() for option_name
+                          in (options.split(options_sep) if options else [])]))
         options = options or default_options
         # Abstaining should always be an option
         options.append(ABSTAIN_OPTION)
@@ -220,12 +224,12 @@ class Plugin(BasePlugin):
         return self._print_votes()
 
     escaped_voting_shortcut_pattern = (
-        u"|".join(re.escape(str_) for str_ in VOTE_SHORTCUT_TO_NAME.keys()))
+        "|".join(re.escape(str_) for str_ in list(VOTE_SHORTCUT_TO_NAME.keys())))
 
     vote_regex_template = (
-        u"^((?P<vote>(" +
+        "^((?P<vote>(" +
         escaped_voting_shortcut_pattern +
-        u"\\\\){vote_modifier})(?P<option>.*))$")
+        "\\\\){vote_modifier})(?P<option>.*))$")
 
     @listens_to_regex_command("vote", (vote_regex_template
                                        .format(vote_modifier="?")))
@@ -236,7 +240,7 @@ class Plugin(BasePlugin):
             if changes_made:
                 self.store("changes_since_countvote", json.dumps(True))
         except InvalidOptionError as e:
-            return unicode(e)
+            return str(e)
 
     # This makes the vote symbol (+, -, \, etc) required, since otherwise we can't
     # tell if this is meant to be a vote or not.
@@ -265,7 +269,8 @@ class Plugin(BasePlugin):
         votes = self._remove_all_votes(line.user, votes)
         self.store("votes", json.dumps(votes))
 
-    def _parse_vote(self, voter, (vote, option)):
+    def _parse_vote(self, voter, xxx_todo_changeme):
+        (vote, option) = xxx_todo_changeme
         boolean_shortform = self.config["boolean_shortform"]
         if vote == "\\":
             if (option == boolean_shortform or
@@ -292,7 +297,8 @@ class Plugin(BasePlugin):
             vote=VOTE_SHORTCUT_TO_NAME[vote]
         )
 
-    def _find_longest_matching_option(self, user_option, valid_options):
+    @staticmethod
+    def _find_longest_matching_option(user_option, valid_options):
         user_option = user_option.strip().expandtabs(1)
 
         def matches_user_option(option):
@@ -302,7 +308,7 @@ class Plugin(BasePlugin):
             return (user_option == option or
                     user_option.startswith(option + " "))
 
-        matching_options = filter(matches_user_option, valid_options)
+        matching_options = list(filter(matches_user_option, valid_options))
         return (max(matching_options, key=len)
                 if matching_options else '')
 
@@ -331,7 +337,7 @@ class Plugin(BasePlugin):
 
     def _print_votes(self):
         votes = json.loads(self.retrieve("votes"))
-        section_names = votes.keys()
+        section_names = list(votes.keys())
         section_names = sorted(section_names)
         # Abstain should always be last in the list
         section_names.append(section_names.pop(
@@ -364,7 +370,8 @@ class Plugin(BasePlugin):
                 username_sep=username_sep
             )
 
-    def _remove_all_votes(self, voter, votes):
+    @staticmethod
+    def _remove_all_votes(voter, votes):
         for section in votes.copy():
             sec = votes[section]
             try:
@@ -384,7 +391,8 @@ class Plugin(BasePlugin):
                 self.config["boolean_shortform"])
         return options
 
-    def _get_abstain_vote(self, voter):
+    @staticmethod
+    def _get_abstain_vote(voter):
         return Vote(
             voter=voter,
             section=ABSTAIN_OPTION,

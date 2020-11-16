@@ -1,6 +1,6 @@
 import re
 import random
-from urllib import urlencode
+from urllib.parse import urlencode
 
 import requests
 
@@ -32,19 +32,17 @@ class Plugin(BasePlugin):
 
         {{ nick }}: mustache me http://example.com/queen_of_england.jpg
     """
-    @listens_to_mentions(ur'(image|img)( me)? (?P<image>.*)')
+    @listens_to_mentions(r'(image|img)( me)? (?P<image>.*)')
     def respond_to_image(self, line, image):
         url = image_me(image)
         return url
 
-
-    @listens_to_mentions(ur'(animate)( me)? (?P<image>.*)')
+    @listens_to_mentions(r'(animate)( me)? (?P<image>.*)')
     def respond_to_animate(self, line, image):
         url = image_me(image, animated=True)
         return url
 
-
-    @listens_to_mentions(ur'(?:mo?u)?sta(?:s|c)he?(?: me)? (?P<image>.*)')
+    @listens_to_mentions(r'(?:mo?u)?sta(?:s|c)he?(?: me)? (?P<image>.*)')
     def respond_to_mustache(self, line, image):
         mustache = random.choice([0, 1, 2])
         mustachify = "http://mustachify.me/{mustache}?src={url}"

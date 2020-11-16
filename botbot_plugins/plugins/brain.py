@@ -19,12 +19,12 @@ class Plugin(BasePlugin):
         thing I need to remember
     """
 
-    @listens_to_mentions(ur'(?P<key>.+?)=\s*(?P<value>.*)')
+    @listens_to_mentions(r'(?P<key>.+?)=\s*(?P<value>.*)')
     def remember(self, line, key, value):
         self.store(key, value)
-        return u'I will remember "{0}" for you {1}.'.format(key, line.user)
+        return f'I will remember "{key}" for you {line.user}.'
 
-    @listens_to_mentions(ur'(?P<key>.*)\?')
+    @listens_to_mentions(r'(?P<key>.*)\?')
     def recall(self, line, key):
         value = self.retrieve(key)
         if value:

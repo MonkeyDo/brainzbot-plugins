@@ -15,22 +15,23 @@ class Plugin(BasePlugin):
 
         {{ nick }}: seen MrTaubyPants?
     """
-    @listens_to_all(ur'(.*)')
+    @listens_to_all(r'(.*)')
     def log_user_message(self, line):
         now = time.mktime(time.gmtime())
-        self.store(line.user, u'{0}:{1}'.format(now, line.full_text))
+        self.store(line.user, '{0}:{1}'.format(now, line.full_text))
 
-    @listens_to_mentions(ur'seen\s*(?P<nick>[\w-]*)')
+    @listens_to_mentions(r'seen\s*(?P<nick>[\w-]*)')
     def last_seen(self, line, nick):
         value = self.retrieve(nick)
         if value:
             timestamp, said = value.split(':', 1)
             date = datetime.datetime.fromtimestamp(float(timestamp))
-            msg = u'Yes, I saw {0} {1}.\n'.format(nick, _timesince(date))
-            msg += u'{0} said: "{1}"'.format(nick, said)
+            msg = f'Yes, I saw {nick} {_timesince(date)}.\n'
+            msg += f'{nick} said: "{said}"'
         else:
-            msg = u"Sorry, I haven't seen {0}.".format(nick)
+            msg = "Sorry, I haven't seen {0}.".format(nick)
         return msg
+
 
 # public domain via http://flask.pocoo.org/snippets/33/
 def _timesince(dt, default="just now"):
@@ -55,6 +56,6 @@ def _timesince(dt, default="just now"):
     for period, singular, plural in periods:
 
         if period:
-            return "%d %s ago" % (period, singular if period == 1 else plural)
+            return f"{period:d} {singular if period == 1 else plural} ago"
 
     return default

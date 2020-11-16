@@ -10,7 +10,7 @@ def app():
 
 
 def test_remember(app):
-    responses = app.respond(u"@shrug=¯\_(ツ)_/¯")
-    assert responses == [u'I will remember "shrug" for you repl_user.']
-    responses = app.respond(ur"@shrug ?")
-    assert responses == [u"¯\_(ツ)_/¯"]
+    responses = app.respond("@shrug=¯\_(ツ)_/¯")
+    assert responses == ['I will remember "shrug" for you repl_user.']
+    responses = app.respond(r"@shrug ?")
+    assert responses == ["¯\_(ツ)_/¯"]

@@ -4,6 +4,7 @@ import sys
 
 import fakeredis
 
+
 class PrivateMessage(object):
     """
     A holder object for sending a private message.
@@ -24,7 +25,7 @@ class Router(object):
 
 
 class BasePlugin(object):
-    "All plugins inherit this class"
+    """All plugins inherit this class"""
     app = None
     config_class = None
 
@@ -41,7 +42,7 @@ class BasePlugin(object):
 
     def _unique_key(self, key):
         """helper method for namespacing storage keys per plugin"""
-        return u'{0}:{1}'.format(self.slug, key.strip())
+        return f'{self.slug}:{key.strip()}'
 
     def store(self, key, value):
         """Stores `value` as a string to `key`
@@ -49,7 +50,7 @@ class BasePlugin(object):
         SET: http://redis.io/commands/set
         """
         ukey = self._unique_key(key)
-        self.app.storage.set(ukey, unicode(value).encode('utf-8'))
+        self.app.storage.set(ukey, str(value).encode('utf-8'))
 
     def retrieve(self, key):
         """Retrieves string stored at `key`
@@ -59,7 +60,7 @@ class BasePlugin(object):
         ukey = self._unique_key(key)
         value = self.app.storage.get(ukey)
         if value:
-            value = unicode(value, 'utf-8')
+            value = str(value, 'utf-8')
         return value
 
     def delete(self, key):
@@ -173,12 +174,10 @@ class DummyApp(Cmd):
             attr = getattr(plugin, key)
             if not key.startswith('__') and getattr(attr, 'route_rule', None):
                 router_name = attr.route_rule[0]
-                if router_name in [r.name for _, r in self.routers.iteritems()]:
+                if router_name in [r.name for _, r in self.routers.items()]:
                     rule = attr.route_rule[1]
 
-                    self.output(u'Route {}: {} ({}, {})'.format(router_name,
-                                                                plugin.slug, key,
-                                                                rule))
+                    self.output(f'Route {router_name}: {plugin.slug} ({key}, {rule})')
                     self.routers[router_name].plugins.setdefault(
                         plugin.slug, []).append((rule, attr))
                     # Setup the plugin config
@@ -214,7 +213,7 @@ class DummyApp(Cmd):
 
     def do_EOF(self, arg):
         """Kill cmdloop on CTRL-d"""
-        print "\nGoodbye"
+        print("\nGoodbye")
         sys.exit()
 
     def do_config(self, arg):
@@ -226,11 +225,10 @@ class DummyApp(Cmd):
             print("Bad config format. {plugin_slug}:{field_name}={value}")
             return
         if plugin_slug not in self.plugin_configs:
-            print('No config defined for "{0}"'.format(plugin_slug))
+            print(f'No config defined for "{plugin_slug}"')
             return
         if field not in self.plugin_configs[plugin_slug].fields:
-            print('Field "{0}" is not defined for "{1}"'.format(field,
-                                                                plugin_slug))
+            print(f'Field "{field}" is not defined for "{plugin_slug}"')
             return
         self.plugin_configs[plugin_slug].fields[field] = value
         print('Config saved.')
@@ -250,7 +248,7 @@ class DummyApp(Cmd):
 
     def check_routes_for_matches(self, line, router):
         """Checks if line matches the routes' rules and calls functions"""
-        for _, route_list in router.plugins.items():
+        for _, route_list in list(router.plugins.items()):
             for rule, func in route_list:
                 if router.name == "commands":
                     cmd = rule
@@ -282,5 +280,6 @@ class DummyApp(Cmd):
             else:
                 self.responses.append(response)
                 self.output('[o__o]: ' + response)
+
 
 app = DummyApp()

@@ -32,18 +32,17 @@ class Plugin(BasePlugin):
                 else:
                     out = "You received the following messages when you were offline."
                 for message in messages:
-                    out += "\n{0}".format(message)
+                    out += f"\n{message}"
                 return PrivateMessage(line.user, out)
 
-    find_message.route_rule = ('firehose', ur'(.*)')
+    find_message.route_rule = ('firehose', r'(.*)')
 
     @listens_to_mentions(r'^message\s+(?P<nick>[\w\-_]+)\s+(?P<message>.*)$')
     def store_message(self, line, nick, message):
         """
         Store a message
         """
-        message = "From {0} '{1}'".format(
-            line.user, message)
+        message = f"From {line.user} '{message}'"
         # does the user have any messages waiting?
         messages = self.retrieve(nick)
         if not messages:
@@ -54,6 +53,5 @@ class Plugin(BasePlugin):
         messages.add(message)
         messages = list(messages)
         self.store(nick, json.dumps(messages))
-        return u"{0}, I will tell {1} when they appear online.".format(
-            line.user, nick)
+        return f"{line.user}, I will tell {nick} when they appear online."
 

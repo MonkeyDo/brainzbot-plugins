@@ -7,6 +7,7 @@ from botbot_plugins.plugins import jenkins
 
 class FakeResponse(object):
     """Dummy response from Jenkins"""
+
     def __init__(self, status_code=200):
         self.status_code = status_code
 
@@ -26,7 +27,7 @@ def test_success_jenkins(app):
         responses = app.respond("@jenkins build myproj")
         assert responses == [
             '\n'.join(["Build started for myproj.",
-            "https://jenkins.example.com/job/myproj/lastBuild/console"])
+                       "https://jenkins.example.com/job/myproj/lastBuild/console"])
         ]
 
 
