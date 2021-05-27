@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='brainzbot_plugins',
+    name='botbot_plugins',
     version='1.0',
     description="Plugins and service integrations for BrainzBot",
     author="MetaBrainz",

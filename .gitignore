@@ -1,4 +1,5 @@
 __pycache__
 .idea/
+botbot_plugins.egg-info/
+reqlib-metadata/
 *.pyc
-botbot_plugins.egg-info
