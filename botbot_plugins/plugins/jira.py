@@ -39,7 +39,13 @@ class Plugin(BasePlugin):
         """
         if line.user not in self._get_ignored_nicks():
             api_url = urljoin(self.config['jira_url'], self.config['rest_api_suffix'])
-            projects = json.loads(self.retrieve('projects'))
+
+            projects_json = self.retrieve('projects')
+
+            if projects_json is None:
+                return "Please update the project list first by pinging me with 'UPDATE:JIRA'."
+
+            projects = json.loads(projects_json)
 
             queries = re.findall(r"[A-Z]+-\d+", line.text)
             queries = [query.split("-") for query in queries]
