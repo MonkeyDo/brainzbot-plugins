@@ -1,7 +1,15 @@
 language: python
-cache: pip
+os: linux
+dist: bionic
 python:
-  - "2.7"
+  - "3.8"
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/virtualenv
 install:
-  - "pip install ."
-script: py.test
+  - "export WOKON_HOME=.pipenv/venvs"
+  - "export PIP_CACHE_DIR=.pipenv/pipcache"
+  - "pip install pipenv"
+  - "pipenv install --dev"
+script: "pipenv run python -m pytest"
