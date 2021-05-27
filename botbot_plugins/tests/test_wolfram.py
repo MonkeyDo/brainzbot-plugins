@@ -92,7 +92,7 @@ def test_github(app):
     with patch.object(requests, 'get') as mock_get:
         mock_get.return_value = FakeResponse()
         responses = app.respond("@What is 9 am PST in UTC ?")
-        mock_get.assert_called_with('http://api.wolframalpha.com/v2/query?',
+        mock_get.assert_called_with('https://api.wolframalpha.com/v2/query?',
                                     params={
                                         'input': 'What is 9 am PST in UTC ?',
                                         'appid': 'secret-appid'})

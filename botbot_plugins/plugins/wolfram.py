@@ -29,12 +29,11 @@ class Plugin(BasePlugin):
         {{ nick }}: What is the air speed velocity of an unladen swallow?
     """
     config_class = Config
-    url = "http://api.wolframalpha.com/v2/query?"
+    url = "https://api.wolframalpha.com/v2/query?"
 
     @listens_to_mentions(r'(W|w)(hat|here|ho|hy|hen) .*?\?')
     def search(self, line):
-        message = line.text.encode('utf8')
-        payload = {'input': message, 'appid': self.config['app_id']}
+        payload = {'input': line.text, 'appid': self.config['app_id']}
 
         response = requests.get(self.url, params=payload)
 

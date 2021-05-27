@@ -97,6 +97,11 @@ def test_jira(app):
 
 
 def test_jira_multiple(app):
+    # Set up project list
+    with patch.object(requests, 'get') as mock_get:
+        mock_get.side_effect = patched_get
+        app.respond("@UPDATE:JIRA")
+
     # Test multiple issues in a single message
     with patch.object(requests, 'get') as mock_get:
         clear_recent_issues(app)
@@ -110,6 +115,11 @@ def test_jira_multiple(app):
 
 
 def test_jira_cooldown(app):
+    # Set up project list
+    with patch.object(requests, 'get') as mock_get:
+        mock_get.side_effect = patched_get
+        app.respond("@UPDATE:JIRA")
+
     # Test issue cooldown function
     with patch.object(requests, 'get') as mock_get:
         mock_get.side_effect = patched_get
@@ -121,6 +131,11 @@ def test_jira_cooldown(app):
 
 
 def test_jira_unicode(app):
+    # Set up project list
+    with patch.object(requests, 'get') as mock_get:
+        mock_get.side_effect = patched_get
+        app.respond("@UPDATE:JIRA")
+
     # Test unicode compability
     with patch.object(requests, 'get') as mock_get:
         mock_get.side_effect = patched_get
