@@ -1,6 +1,7 @@
+.pytest_cache
+botbot_plugins.egg-info
 .gitignore
 .travis.yml
 CONTRIBUTING.md
 Dockerfile
-LICENSE
 README.md
