@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import requests
 from ..base import BasePlugin
 from .. import config
@@ -26,22 +25,35 @@ class Plugin(BasePlugin):
     To store an abbreviation for a repo use:
 
     BrainzBot: GH:<abbreviation>=<repo_name>
-
+    
     This assumes the IRC bot is named BrainzBot.
     The 'metabrainz/' organization name is hardcoded, you only need the repo name itself.
 
     To retrieve a PR simply use:
 
     <abbreviation>#<PR_number>  —  For example:  MB#1234
-
+    
     For multiple pull requests, use:
-
+    
     <abbreviation>#<PR_number_1>,<PR_number_2>,<PR_number_3>  —  For example:  MB#1234,5678,91011
 
     Note: The lookup is limited to 5 issues.
     """
     url = "https://api.github.com/repos"
     config_class = Config
+
+    def __init__(self, *args, **kwargs):
+        super(BasePlugin, self).__init__(*args, **kwargs)
+        # Set up initial project abbreviations to avoid doing it manually on each restart
+        # These can be overwritten as described in store_abbreviation
+        self.store("MB", "musicbrainz-server")
+        self.store("LB", "listenbrainz-server")
+        self.store("PICARD", "picard")
+        self.store("AB", "acousticbrainz-server")
+        self.store("BB", "bookbrainz-site")
+        self.store("CB", "critiquebrainz")
+        self.store("MEB", "metabrainz.org")
+        self.store("BU", "brainzutils-python")
 
     @listens_to_mentions(ur'(?:.*)\b(?:GH|gh):(?P<abbreviation>[\w\-\_]+)=(?P<repo>[\w\-\_]+)')
     def store_abbreviation(self, line, abbreviation, repo):
