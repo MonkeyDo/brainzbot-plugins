@@ -42,19 +42,19 @@ class Plugin(BasePlugin):
     """
     url = "https://api.github.com/repos"
     config_class = Config
-    
-    def __init__(self, *args, **kwargs):
-        super(Plugin, self).__init__(*args, **kwargs)
-        # Set up initial project abbreviations to avoid doing it manually on each restart
-        # These can be overwritten as described in store_abbreviation
-        self.store("MBS", "musicbrainz-server")
-        self.store("LB", "listenbrainz-server")
-        self.store("PICARD", "picard")
-        self.store("AB", "acousticbrainz-server")
-        self.store("BB", "bookbrainz-site")
-        self.store("CB", "critiquebrainz")
-        self.store("MEB", "metabrainz.org")
-        self.store("BU", "brainzutils-python")
+    # Set up initial MetaBrainz project abbreviations
+    # to avoid having to do it manually on each restart
+    # These can be overwritten as described in store_abbreviation
+    project_abbreviations = {
+        "MBS": "musicbrainz-server",
+        "LB": "listenbrainz-server",
+        "PICARD": "picard",
+        "AB": "acousticbrainz-server",
+        "BB": "bookbrainz-site",
+        "CB": "critiquebrainz",
+        "MEB": "metabrainz.org",
+        "BU": "brainzutils-python"
+    }
 
     @listens_to_mentions(ur'(?:.*)\b(?:GH|gh):(?P<abbreviation>[\w\-\_]+)=(?P<repo>[\w\-\_]+)')
     def store_abbreviation(self, line, abbreviation, repo):
@@ -67,9 +67,14 @@ class Plugin(BasePlugin):
         """Lookup an specified repo pulls"""
         # pulls can be a list of pulls separated by a comma
         pull_list = [i.strip() for i in pulls.split(",")]
+        # Check first in our stored values, allows overwriting hardcoded project_abbreviations values
         repo = self.retrieve(repo_abbreviation)
         if not repo:
-            return
+            if repo_abbreviation in project_abbreviations:
+                # Fallback to our hardcoded project_abbreviations
+                repo = project_abbreviations[repo_abbreviation]
+            else:
+                return
         response_list = []
         for pull in pull_list[:5]:
             api_url = "/".join([self.url, self.config['organization'],
