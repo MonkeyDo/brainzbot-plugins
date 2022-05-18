@@ -74,7 +74,7 @@ class Plugin(BasePlugin):
         for pull in pull_list[:5]:
             api_url = "/".join([self.url, self.config['organization'],
                                 repo, "pulls", pull])
-            response = requests.get(api_url, auth=self._get_auth())
+            response = requests.get(api_url)
             if response.status_code == 200:
                 resp = u'{title}: {html_url}'.format(**response.json())
                 response_list.append(resp)
@@ -84,9 +84,3 @@ class Plugin(BasePlugin):
                 response_list.append(resp)
 
         return ", ".join(response_list)
-
-    def _get_auth(self):
-        """Return user credentials if they are configured"""
-        if self.config['user'] and self.config['password']:
-            return (self.config['user'], self.config['password'])
-        return None
