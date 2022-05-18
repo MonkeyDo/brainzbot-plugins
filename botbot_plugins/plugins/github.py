@@ -72,7 +72,7 @@ class Plugin(BasePlugin):
         if not repo:
             if repo_abbreviation in self.project_abbreviations:
                 # Fallback to our hardcoded project_abbreviations
-                repo = project_abbreviations[repo_abbreviation]
+                repo = self.project_abbreviations[repo_abbreviation]
             else:
                 return
         response_list = []
