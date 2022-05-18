@@ -70,7 +70,7 @@ class Plugin(BasePlugin):
         # Check first in our stored values, allows overwriting hardcoded project_abbreviations values
         repo = self.retrieve(repo_abbreviation)
         if not repo:
-            if repo_abbreviation in project_abbreviations:
+            if repo_abbreviation in self.project_abbreviations:
                 # Fallback to our hardcoded project_abbreviations
                 repo = project_abbreviations[repo_abbreviation]
             else:
